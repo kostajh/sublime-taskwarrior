@@ -1,6 +1,6 @@
 # Sublime Taskwarrior
 
-A plguin for ST2 to view, modify and add tasks with [Taskwarrior](http://www.taskwarrior.org).
+A plugin for ST2 to view, modify and add tasks with [Taskwarrior](http://www.taskwarrior.org).
 
 ## Commands
 
