@@ -1,0 +1,10 @@
+[
+    {
+      "caption": "Sublime Taskwarrior: View Tasks",
+      "command": "taskwarrior_view_tasks"
+    },
+    {
+      "caption": "Subime Taskwarrior: Add Task",
+      "command": "taskwarrior_add_task_from_input"
+    }
+]

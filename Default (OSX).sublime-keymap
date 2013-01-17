@@ -1,0 +1,10 @@
+[
+  {
+    "keys": ["super+alt+t"],
+    "command": "taskwarrior_view_tasks"
+  },
+  {
+    "keys": ["super+shift+a"],
+    "command": "taskwarrior_add_task_from_input"
+  }
+]
