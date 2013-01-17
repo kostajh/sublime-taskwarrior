@@ -12,7 +12,7 @@ A plguin for ST2 to view, modify and add tasks with [Taskwarrior](http://www.tas
 
 ### taskw
 
-This is a python API for the taskwarrior command line tool (see https://github.com/ralphbean/taskw).
+[Taskw](https://github.com/ralphbean/taskw) is a python API for Taskwarrior.
 
 If you don't have pip-2.6: `sudo easy_install-2.6 pip`
 
