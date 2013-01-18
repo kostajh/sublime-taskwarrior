@@ -129,7 +129,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         twtask = twtasks[idx - 3]
         self.tasktitle = twtask[u'description']
-        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', u'\u2714' + ' Complete', u'\u270E' + ' Modify', u'\u2715' + ' Delete']
+        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u2715' + ' Delete']
 
         self.window.show_quick_panel(self.mod_options, self.mod_task, sublime.MONOSPACE_FONT)
 
@@ -145,7 +145,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         if idx == 1:
             self.window.show_quick_panel(self.ti, self.get_mod_task_options, sublime.MONOSPACE_FONT)
 
-        # Complete Task
+        # Mark Task as done
         if idx == 2:
             # @todo use TaskWarrior API?
             subprocess.call(['task', twtask[u'uuid'], 'done'])
@@ -158,7 +158,6 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         # Delete Task
         if idx == 4:
             # @todo use Taskwarrior API?
-            # @todo need to handle confirmation request from TW
             subprocess.call('yes | task ' + twtask[u'uuid'] + ' delete', shell=True)
             self.get_tasks(self.quick_panel_project_selected_index)
 
