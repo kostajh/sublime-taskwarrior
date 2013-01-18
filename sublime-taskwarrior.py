@@ -84,9 +84,18 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.ti.append([u'\u21b5' + ' Back to Projects'])
         self.ti.append([u'\u271A' + ' Add a Task'])
 
+        # Build list of pending tasks for selected project.
         w = TaskWarrior()
         tasks = w.load_tasks()
-        twtasks = tasks['pending']
+        pending_tasks = tasks['pending']
+        twtasks = []
+        for task in pending_tasks:
+            if 'project' in task and twproject != "View all tasks":
+                if task[u'project'] == twproject:
+                    twtasks.append(task)
+            else:
+                if twproject == "View all tasks":
+                    twtasks.append(task)
 
         try:
             for task in twtasks:
@@ -118,8 +127,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             self.window.run_command('taskwarrior_add_task_from_input')
             return
 
-        # @todo Index is off for per-project task selection
-        twtask = twtasks[idx - 2]
+        twtask = twtasks[idx - 3]
         self.tasktitle = twtask[u'description']
         self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', u'\u2714' + ' Complete', u'\u270E' + ' Modify', u'\u2715' + ' Delete']
 
