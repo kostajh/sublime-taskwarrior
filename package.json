@@ -9,8 +9,8 @@
       "platforms": {
         "osx": [
           {
-            "version": "0.1.0",
-            "url": "https://github.com/kostajh/sublime-taskwarrior/archive/v0.1.0.tar.gz"
+            "version": "0.1.1",
+            "url": "https://github.com/kostajh/sublime-taskwarrior/archive/0.1.1.tar.gz"
           }
         ]
       }
