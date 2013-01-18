@@ -1,15 +1,16 @@
 {
+  "schema_version": "1.2",
   "packages": [
     {
       "name": "Sublime Taskwarrior",
-      "description": "Taskwarrior integration for Sublime Text 2",
-      "author": "kostajh",
-      "homepage": "https://github.com/kostajh/sublime-taskwarrior",
+      "description": "Taskwarrior plugin for Sublime Text 2",
+      "author": "Kosta Harlan",
+      "homepage": "http://kostajh.github.com/sublime-taskwarrior",
       "platforms": {
         "osx": [
           {
             "version": "0.1.0",
-            "url": "https://nodeload.github.com/kostajh/sublime-taskwarrior/zipball/master"
+            "url": "https://github.com/kostajh/sublime-taskwarrior/archive/v0.1.0.tar.gz"
           }
         ]
       }
