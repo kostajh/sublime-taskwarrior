@@ -51,6 +51,8 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
     # Get list of projects with pending tasks.
     def get_projects(self):
+        # This will get an updated project list. Surely there is a better way.
+        subprocess.call(['task'])
         twprojects = []
         twprojects.append('View all tasks')
         w = TaskWarrior()
@@ -64,7 +66,8 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
     # Get pending tasks.
     def get_tasks(self, idx):
-
+        # This will get an updated task list. Surely there is a better way.
+        subprocess.call(['task'])
         global twproject
         global twtasks
 
