@@ -1,0 +1,5 @@
+Thanks for installing Sublime Taskwarrior.
+
+Please see the [README](https://github.com/kostajh/sublime-taskwarrior/blob/master/README.md) for instructions on getting started.
+
+Feedback welcome, please file an issue at https://github.com/kostajh/sublime-taskwarrior/issues

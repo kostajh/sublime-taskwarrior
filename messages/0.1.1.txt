@@ -1,0 +1,4 @@
+Sublime Taskwarrior 0.1.1 Changelog
+
+- Changed "Completed" to "Done" in task modifications
+- Fixed bug with incorrect selection of task index in project listings
