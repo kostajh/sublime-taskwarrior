@@ -1,5 +1,0 @@
-Sublime Taskwarrior 0.1.4 Changelog
-
-Bug fixes:
-
-- Update task list after completing/deleting a task.
