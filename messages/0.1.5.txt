@@ -1,0 +1,3 @@
+Sublime Taskwarrior 0.1.5 Changelog
+
+- Add keymaps for Linux and Windows, update README to specify compatiiblity with same.

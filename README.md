@@ -28,7 +28,7 @@ Then: `sudo pip-2.6 install taskw`
 
 ### System
 
-This plugin has been tested on OSX 10.8. If you test on Linux / Windows please let us know.
+This plugin has been tested on OSX 10.8. It should work on Linux and Windows, but if you test please let us know.
 
 ## Credits
 

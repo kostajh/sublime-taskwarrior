@@ -2,15 +2,15 @@
   "schema_version": "1.2",
   "packages": [
     {
-      "name": "Sublime Taskwarrior",
+      "name": "Taskwarrior",
       "description": "Taskwarrior plugin for Sublime Text 2",
       "author": "Kosta Harlan",
       "homepage": "http://kostajh.github.com/sublime-taskwarrior",
       "platforms": {
-        "osx": [
+        "*": [
           {
-            "version": "0.1.4",
-            "url": "https://nodeload.github.com/kostajh/sublime-taskwarrior/zip/0.1.4"
+            "version": "0.1.5",
+            "url": "https://nodeload.github.com/kostajh/sublime-taskwarrior/zip/0.1.5"
           }
         ]
       }
