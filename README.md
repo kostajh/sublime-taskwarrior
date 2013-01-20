@@ -8,9 +8,17 @@ When modifying or adding a task, use the same Taskwarrior syntax as you would on
 
 ## Commands
 
-`super+alt+t` - View and modify tasks
+### Mac OS X
+
+`super+alt+t` - View, modify, mark as completed, delete, and annotate tasks
 
 `super+shift+a` - Add task
+
+### Linux / Windows
+
+`ctrl+alt+t` - View, modify, mark as completed, delete, and annotate tasks
+
+`ctrl+shift+a` - Add task
 
 ## Requirements
 
