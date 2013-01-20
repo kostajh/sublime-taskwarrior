@@ -192,7 +192,7 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
     global twtask
 
     def run(self):
-        self.window.show_input_panel('Annotate "' + twtask[u'description'] + '"', "", self.on_done, None, None)
+        self.window.show_input_panel('Annotate "' + twtask[u'description'] + '"', sublime.get_clipboard(), self.on_done, None, None)
         pass
 
     def on_done(self, input):
