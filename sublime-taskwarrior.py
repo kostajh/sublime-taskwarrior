@@ -167,6 +167,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             # @todo use Taskw
             # @todo add confirmation
             subprocess.call('yes | task ' + twtask[u'uuid'] + ' delete', shell=True)
+            sublime.status_message('Deleted task "' + twtask[u'description'] + '"')
             self.get_tasks(self.quick_panel_project_selected_index)
 
 
@@ -183,6 +184,7 @@ class TaskwarriorAddTaskFromInputCommand(sublime_plugin.WindowCommand):
         if input != '':
             self.task['title'] = input
             subprocess.call(['task', 'add', input])
+            sublime.status_message('Added task "' + input + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
 
@@ -198,6 +200,7 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
     def on_done(self, input):
         if input != '':
             subprocess.call(['task', twtask[u'uuid'], 'annotate', input])
+            sublime.status_message('Annotated task "' + twtask[u'description'] + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
 
@@ -214,5 +217,6 @@ class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
         if input != '':
             twtask[u'description'] = input
             subprocess.call(['task', twtask[u'uuid'], 'mod', input])
+            sublime.status_message('Modified task "' + twtask[u'description'] + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
