@@ -220,3 +220,17 @@ class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
             sublime.status_message('Modified task "' + twtask[u'description'] + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
+
+
+class TaskwarriorAnnotateNewestTaskFromClipboardCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        w = TaskWarrior()
+        tasks = w.load_tasks()
+        pending_tasks = tasks[u'pending']
+        twtask = pending_tasks[-1]
+        clipboard = sublime.get_clipboard()
+        if clipboard != '' and twtask[u'uuid'] != '':
+            subprocess.call(['task', twtask[u'uuid'], 'annotate', clipboard])
+            sublime.status_message('Annotated task "' + twtask[u'description'] + '" with text "' + clipboard + '"')
+        pass

@@ -14,11 +14,15 @@ When modifying or adding a task, use the same Taskwarrior syntax as you would on
 
 `super+shift+a` - Add task
 
+`super+shift+a, super+shift+t` – Annotate last task from clipboard.
+
 ### Linux / Windows
 
 `ctrl+alt+t` - View, modify, mark as completed, delete, and annotate tasks
 
 `ctrl+shift+a` - Add task
+
+`ctrl+shift+a, ctrl+shift+t` – Annotate last task from clipboard.
 
 ## Requirements
 
