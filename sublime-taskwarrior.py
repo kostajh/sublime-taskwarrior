@@ -2,6 +2,7 @@ import sublime
 import sublime_plugin
 from taskw import TaskWarrior
 import subprocess
+import datetime
 
 twprojects = None
 twproject = None
@@ -46,7 +47,6 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         if twproject is not None or resetTasks == True:
             self.get_tasks(self.quick_panel_project_selected_index)
             return
-
         self.window.show_quick_panel(self.pri, self.get_tasks, sublime.MONOSPACE_FONT)
 
     # Get list of projects with pending tasks.
@@ -102,12 +102,25 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         try:
             for task in twtasks:
+                meta_data = [task]
+                due = ''
+                tags = ''
+                created = "Created: " + datetime.datetime.fromtimestamp(int(task[u'entry'])).strftime('%Y-%m-%d %H:%M:%S')
+                if 'due' in task:
+                    due = "Due: " + datetime.datetime.fromtimestamp(int(task[u'due'])).strftime('%Y-%m-%d %H:%M:%S')
+                print created
+
+                print 'due'
+                print due
+                meta_data.append("Due: " + due)
+                meta_data.append("Created: " + created)
+                print meta_data
                 if 'project' in task and twproject != "View all tasks":
                     if (task[u'project'] == twproject):
                         self.ti.append(['    ' + task[u'description']])
                 else:
                     if twproject == "View all tasks":
-                        self.ti.append(['    ' + task[u'description']])
+                        self.ti.append([task[u'description']])
         except:
             pass
 
