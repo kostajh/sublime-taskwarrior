@@ -40,6 +40,8 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.pri.append([u'\u271A' + ' Add a New Task'])
         try:
             for twproject in twprojects:
+                # @todo Display task counts for project
+                # `task project:proposals count status:pending`
                 self.pri.append(['  ' + twproject])
         except:
             pass
