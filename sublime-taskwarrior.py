@@ -104,11 +104,16 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
                 meta_data = ''
                 due = ''
                 tags = ''
+                priority = ''
                 created = "Created: " + datetime.datetime.fromtimestamp(int(task[u'entry'])).strftime('%m-%d-%y')
                 if 'due' in task:
                     due = "Due: " + datetime.datetime.fromtimestamp(int(task[u'due'])).strftime('%m-%d-%y')
                 if 'tags' in task:
                     tags = "Tags: " + ', '.join(task[u'tags'])
+                if 'priority' in task:
+                    priority = task[u'priority']
+                if priority != '':
+                    meta_data += priority + " "
                 if due != '':
                     meta_data += due + " "
                 if tags != '':
@@ -120,7 +125,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
                 else:
                     if twproject == "View all tasks":
                         if 'project' in task:
-                            meta_data += "Pro: " + task[u'project'] + " " + created
+                            meta_data += "@" + task[u'project'] + " " + created
                         self.ti.append([task[u'description'], meta_data])
         except:
             pass
