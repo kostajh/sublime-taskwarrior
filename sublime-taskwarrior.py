@@ -162,7 +162,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         if 'start' in twtask:
             status = u'\u21BA' + ' Stop task'
 
-        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', status, u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u221E' + ' Annotate', u'\u2715' + ' Delete']
+        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', status, u'\u2714' + ' Done', u'\u2600' + ' View details', u'\u270E' + ' Modify', u'\u221E' + ' Annotate', u'\u2715' + ' Delete']
 
         self.window.show_quick_panel(self.mod_options, self.mod_task, sublime.MONOSPACE_FONT)
 
@@ -196,16 +196,33 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             sublime.status_message('Completed task "' + twtask[u'description'] + '"')
             self.get_tasks(self.quick_panel_project_selected_index)
 
-        # Modify Task
+        # View details of a task
         if idx == 4:
+            if not hasattr(self, 'output_view'):
+                self.output_view = self.window.get_output_panel('task_view')
+            v = self.output_view
+            # Write task details to the output panel
+            edit = v.begin_edit()
+            v.insert(edit, v.size(), 'Details for task "' + twtask[u'description'] + '":' + '\n')
+            for key, value in twtask.iteritems():
+                if key != 'description':
+                    if key == 'entry' or key == 'due':
+                        value = datetime.datetime.fromtimestamp(int(value)).strftime('%m-%d-%y')
+                    v.insert(edit, v.size(), "  " + key + ": " + value + '\n')
+            v.end_edit(edit)
+            v.show(v.size())
+            self.window.run_command("show_panel", {"panel": "output." + 'task_view'})
+
+        # Modify Task
+        if idx == 5:
             self.window.run_command('taskwarrior_modify_task_from_input')
 
         # Annotate Task
-        if idx == 5:
+        if idx == 6:
             self.window.run_command('taskwarrior_annotate_task_from_input')
 
         # Delete Task
-        if idx == 6:
+        if idx == 7:
             # @todo use Taskw
             # @todo add confirmation
             subprocess.call('yes | task ' + twtask[u'uuid'] + ' delete', shell=True)
