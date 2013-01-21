@@ -146,7 +146,11 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         twtask = twtasks[idx - 2]
         self.tasktitle = twtask[u'description']
-        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u270E' + ' Annotate', u'\u2715' + ' Delete']
+        status = u'\u270E' + ' Start task'
+        if 'start' in twtask:
+            status = u'\u2715' + ' Stop task'
+
+        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', status, u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u270E' + ' Annotate', u'\u2715' + ' Delete']
 
         self.window.show_quick_panel(self.mod_options, self.mod_task, sublime.MONOSPACE_FONT)
 
@@ -162,22 +166,33 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         if idx == 1:
             self.window.show_quick_panel(self.ti, self.get_mod_task_options, sublime.MONOSPACE_FONT)
 
-        # Mark Task as done
+        # Start or stop task
         if idx == 2:
+            status_command = 'start'
+            status_command_msg = 'Started task '
+            if 'start' in twtask:
+                status_command = 'stop'
+                status_command_msg = 'Stopped task '
+            subprocess.call(['task', twtask[u'uuid'], status_command])
+            sublime.status_message(status_command_msg + '"' + twtask[u'description'] + '"')
+            self.get_tasks(self.quick_panel_project_selected_index)
+
+        # Mark Task as done
+        if idx == 3:
             # @todo use Taskw
             subprocess.call(['task', twtask[u'uuid'], 'done'])
             self.get_tasks(self.quick_panel_project_selected_index)
 
         # Modify Task
-        if idx == 3:
+        if idx == 4:
             self.window.run_command('taskwarrior_modify_task_from_input')
 
         # Annotate Task
-        if idx == 4:
+        if idx == 5:
             self.window.run_command('taskwarrior_annotate_task_from_input')
 
         # Delete Task
-        if idx == 5:
+        if idx == 6:
             # @todo use Taskw
             # @todo add confirmation
             subprocess.call('yes | task ' + twtask[u'uuid'] + ' delete', shell=True)
