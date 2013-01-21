@@ -192,6 +192,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         if idx == 3:
             # @todo use Taskw
             subprocess.call(['task', twtask[u'uuid'], 'done'])
+            sublime.status_message('Completed task "' + twtask[u'description'] + '"')
             self.get_tasks(self.quick_panel_project_selected_index)
 
         # Modify Task
