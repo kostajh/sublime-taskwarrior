@@ -51,7 +51,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
     # Get list of projects with pending tasks.
     def get_projects(self):
-        # This will get an updated project list. Surely there is a better way.
+        # Calling 'task' will get an updated project list.
         subprocess.call(['task'])
         twprojects = []
         twprojects.append('View all tasks')
@@ -83,9 +83,9 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         twproject = twprojects[idx - 1]
 
         self.ti = []
-        self.ti.append('  ' + twproject)
-        self.ti.append([u'\u21b5' + ' Back to Projects'])
-        self.ti.append([u'\u271A' + ' Add a Task'])
+        self.ti.append(['  ' + 'Pending tasks', 'List of all pending tasks'])
+        self.ti.append([u'\u21b5' + ' Back to Projects', 'View list of projects with pending tasks'])
+        self.ti.append([u'\u271A' + ' Add a Task', 'Add a new task'])
 
         # Build list of pending tasks for selected project.
         w = TaskWarrior()
@@ -102,25 +102,27 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         try:
             for task in twtasks:
-                meta_data = [task]
+                meta_data = ''
                 due = ''
                 tags = ''
-                created = "Created: " + datetime.datetime.fromtimestamp(int(task[u'entry'])).strftime('%Y-%m-%d %H:%M:%S')
+                created = "Created: " + datetime.datetime.fromtimestamp(int(task[u'entry'])).strftime('%m-%d-%y')
                 if 'due' in task:
-                    due = "Due: " + datetime.datetime.fromtimestamp(int(task[u'due'])).strftime('%Y-%m-%d %H:%M:%S')
-                print created
-
-                print 'due'
-                print due
-                meta_data.append("Due: " + due)
-                meta_data.append("Created: " + created)
-                print meta_data
+                    due = "Due: " + datetime.datetime.fromtimestamp(int(task[u'due'])).strftime('%m-%d-%y')
+                if 'tags' in task:
+                    tags = "Tags: " + ', '.join(task[u'tags'])
+                if due != '':
+                    meta_data += due + " "
+                if tags != '':
+                    meta_data += tags + " "
                 if 'project' in task and twproject != "View all tasks":
                     if (task[u'project'] == twproject):
-                        self.ti.append(['    ' + task[u'description']])
+                        meta_data += created + " "
+                        self.ti.append([task[u'description'], meta_data])
                 else:
                     if twproject == "View all tasks":
-                        self.ti.append([task[u'description']])
+                        if 'project' in task:
+                            meta_data += "Pro: " + task[u'project'] + " " + created
+                        self.ti.append([task[u'description'], meta_data])
         except:
             pass
 
