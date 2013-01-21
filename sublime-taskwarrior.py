@@ -158,11 +158,11 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         twtask = twtasks[idx - 2]
         self.tasktitle = twtask[u'description']
-        status = u'\u270E' + ' Start task'
+        status = u'\u21AF' + ' Start task'
         if 'start' in twtask:
-            status = u'\u2715' + ' Stop task'
+            status = u'\u21BA' + ' Stop task'
 
-        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', status, u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u270E' + ' Annotate', u'\u2715' + ' Delete']
+        self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', status, u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u221E' + ' Annotate', u'\u2715' + ' Delete']
 
         self.window.show_quick_panel(self.mod_options, self.mod_task, sublime.MONOSPACE_FONT)
 
