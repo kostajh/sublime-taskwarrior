@@ -37,11 +37,10 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             twprojects = self.get_projects()
 
         self.pri = []
-        self.pri.append([u'\u271A' + ' Add a New Task'])
+        self.pri.append([u'\u271A' + ' Add a New Task', 'Create a task from the input panel'])
         try:
             subprocess.call(['task'])
             for twproject in twprojects:
-                # @todo Display task counts for project
                 additional_data = 'See a list of all pending tasks'
                 if twproject != 'View all tasks':
                     pending = 'Pending: ' + subprocess.Popen(['task', 'project:' + twproject, 'count', 'status:pending'], stdout=subprocess.PIPE).communicate()[0]
