@@ -83,7 +83,6 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         twproject = twprojects[idx - 1]
 
         self.ti = []
-        self.ti.append(['  ' + 'Pending tasks', 'List of all pending tasks'])
         self.ti.append([u'\u21b5' + ' Back to Projects', 'View list of projects with pending tasks'])
         self.ti.append([u'\u271A' + ' Add a Task', 'Add a new task'])
 
@@ -132,20 +131,20 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         global twtask
 
-        if (idx == -1 or idx == 0):
+        if (idx == -1):
             return
 
         # Go back
-        if idx == 1:
+        if idx == 0:
             self.window.show_quick_panel(self.pri, self.get_tasks, sublime.MONOSPACE_FONT)
             return
 
         # Add task from input
-        if idx == 2:
+        if idx == 1:
             self.window.run_command('taskwarrior_add_task_from_input')
             return
 
-        twtask = twtasks[idx - 3]
+        twtask = twtasks[idx - 2]
         self.tasktitle = twtask[u'description']
         self.mod_options = [self.tasktitle, u'\u21b5' + ' Back to Tasks', u'\u2714' + ' Done', u'\u270E' + ' Modify', u'\u270E' + ' Annotate', u'\u2715' + ' Delete']
 
