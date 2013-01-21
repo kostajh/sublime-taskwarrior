@@ -39,10 +39,15 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.pri = []
         self.pri.append([u'\u271A' + ' Add a New Task'])
         try:
+            subprocess.call(['task'])
             for twproject in twprojects:
                 # @todo Display task counts for project
-                # `task project:proposals count status:pending`
-                self.pri.append(['  ' + twproject])
+                additional_data = 'See a list of all pending tasks'
+                if twproject != 'View all tasks':
+                    pending = 'Pending: ' + subprocess.Popen(['task', 'project:' + twproject, 'count', 'status:pending'], stdout=subprocess.PIPE).communicate()[0]
+                    completed = 'Completed: ' + subprocess.Popen(['task', 'project:' + twproject, 'count', 'status:completed'], stdout=subprocess.PIPE).communicate()[0]
+                    additional_data = pending + completed
+                self.pri.append([twproject, additional_data])
         except:
             pass
 
