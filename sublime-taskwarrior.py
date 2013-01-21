@@ -9,6 +9,7 @@ twproject = None
 twtasks = None
 twtask = None
 twconf = None
+w = TaskWarrior()
 
 settings = sublime.load_settings("sublime-taskwarrior.sublime-settings")
 
@@ -20,7 +21,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
     def get_conf(self):
 
         global twconf
-        w = TaskWarrior()
+        global w
         twconf = w.load_config()
         return
 
@@ -61,7 +62,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         subprocess.call(['task'])
         twprojects = []
         twprojects.append('View all tasks')
-        w = TaskWarrior()
+        global w
         tasks = w.load_tasks()
         twtasks = tasks['pending']
         for task in twtasks:
@@ -93,7 +94,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.ti.append([u'\u271A' + ' Add a Task', 'Add a new task'])
 
         # Build list of pending tasks for selected project.
-        w = TaskWarrior()
+        global w
         tasks = w.load_tasks()
         pending_tasks = tasks['pending']
         twtasks = []
@@ -249,17 +250,17 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
 class TaskwarriorAnnotateNewestTaskFromInputCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        w = TaskWarrior()
+        global w
         tasks = w.load_tasks()
         pending_tasks = tasks[u'pending']
-        twtask = pending_tasks[-1]
-        self.window.show_input_panel('Annotate "' + twtask[u'description'] + '"', "", self.on_done, None, None)
+        self.twtask = pending_tasks[-1]
+        self.window.show_input_panel('Annotate "' + self.twtask[u'description'] + '"', "", self.on_done, None, None)
         pass
 
     def on_done(self, input):
         if input != '':
-            subprocess.call(['task', twtask[u'uuid'], 'annotate', input])
-            sublime.status_message('Annotated task "' + twtask[u'description'] + '"')
+            subprocess.call(['task', self.twtask[u'uuid'], 'annotate', input])
+            sublime.status_message('Annotated task "' + self.twtask[u'description'] + '" with "' + input + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
 
@@ -284,7 +285,7 @@ class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
 class TaskwarriorAnnotateNewestTaskFromClipboardCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        w = TaskWarrior()
+        global w
         tasks = w.load_tasks()
         pending_tasks = tasks[u'pending']
         twtask = pending_tasks[-1]
