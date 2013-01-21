@@ -245,6 +245,24 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
         pass
 
 
+class TaskwarriorAnnotateNewestTaskFromInputCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        w = TaskWarrior()
+        tasks = w.load_tasks()
+        pending_tasks = tasks[u'pending']
+        twtask = pending_tasks[-1]
+        self.window.show_input_panel('Annotate "' + twtask[u'description'] + '"', "", self.on_done, None, None)
+        pass
+
+    def on_done(self, input):
+        if input != '':
+            subprocess.call(['task', twtask[u'uuid'], 'annotate', input])
+            sublime.status_message('Annotated task "' + twtask[u'description'] + '"')
+            self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
+        pass
+
+
 class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
 
     global twtask

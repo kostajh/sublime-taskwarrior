@@ -9,6 +9,10 @@
   },
   {
     "keys": ["ctrl+shift+a", "ctrl+shift+t"],
+    "command": "taskwarrior_annotate_newest_task_from_input"
+  },
+  {
+    "keys": ["ctrl+shift+a", "ctrl+shift+t"],
     "command": "taskwarrior_annotate_newest_task_from_clipboard"
   }
 ]

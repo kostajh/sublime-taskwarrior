@@ -1,14 +1,18 @@
 [
     {
-      "caption": "Sublime Taskwarrior: View Tasks",
+      "caption": "Taskwarrior: View Tasks",
       "command": "taskwarrior_view_tasks"
     },
     {
-      "caption": "Subime Taskwarrior: Add Task",
+      "caption": "Taskwarrior: Add Task",
       "command": "taskwarrior_add_task_from_input"
     },
     {
-      "caption": "Sublime Taskwarrior: Annotate Newest Task From Clipboard",
+      "caption": "Taskwarrior: Annotate Newest Task",
+      "command": "taskwarrior_annotate_newest_task_from_input"
+    },
+    {
+      "caption": "Taskwarrior: Annotate Newest Task From Clipboard",
       "command": "taskwarrior_annotate_newest_task_from_clipboard"
     }
 ]
