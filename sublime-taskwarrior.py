@@ -179,7 +179,6 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         # Mark Task as done
         if idx == 3:
-            # @todo use Taskw
             subprocess.call(['task', twtask[u'uuid'], 'done'])
             sublime.status_message('Completed task "' + twtask[u'description'] + '"')
             self.get_tasks(self.quick_panel_project_selected_index)
@@ -192,11 +191,8 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             # Write task details to the output panel
             edit = v.begin_edit()
             v.insert(edit, v.size(), 'Details for task "' + twtask[u'description'] + '":' + '\n')
-            for key, value in twtask.iteritems():
-                if key != 'description':
-                    if key == 'entry' or key == 'due':
-                        value = datetime.datetime.fromtimestamp(int(value)).strftime('%m-%d-%y')
-                    v.insert(edit, v.size(), "  " + key + ": " + value + '\n')
+            task_info = subprocess.Popen(['task', twtask[u'uuid']], stdout=subprocess.PIPE).communicate()[0]
+            v.insert(edit, v.size(), task_info)
             v.end_edit(edit)
             v.show(v.size())
             self.window.run_command("show_panel", {"panel": "output." + 'task_view'})
@@ -211,7 +207,6 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         # Delete Task
         if idx == 7:
-            # @todo use Taskw
             # @todo add confirmation
             subprocess.call('yes | task ' + twtask[u'uuid'] + ' delete', shell=True)
             sublime.status_message('Deleted task "' + twtask[u'description'] + '"')

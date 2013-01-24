@@ -30,14 +30,6 @@ When modifying or adding a task, use the same Taskwarrior syntax as you would on
 
 This plugin will not work with Taskwarrior 1.x.
 
-### taskw
-
-[Taskw](https://github.com/ralphbean/taskw) is a python API for Taskwarrior.
-
-If you don't have pip-2.6: `sudo easy_install-2.6 pip`
-
-Then: `sudo pip-2.6 install taskw`
-
 ### System
 
 This plugin has been tested on OSX 10.8. It should work on Linux and Windows, but if you find any problems please file an issue.
