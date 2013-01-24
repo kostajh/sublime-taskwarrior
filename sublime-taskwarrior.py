@@ -12,6 +12,14 @@ twtask = None
 settings = sublime.load_settings("sublime-taskwarrior.sublime-settings")
 
 
+class TaskWarriorAPI:
+    def load_tasks(self):
+        tasks = dict()
+        task_data = "[" + subprocess.Popen(['task', 'export', 'status:pending'], stdout=subprocess.PIPE).communicate()[0] + "]"
+        tasks = json.loads(task_data)
+        return tasks
+
+
 class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
     quick_panel_project_selected_index = None
@@ -43,20 +51,14 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             return
         self.window.show_quick_panel(self.pri, self.get_tasks, sublime.MONOSPACE_FONT)
 
-    def load_tasks(self):
-        tasks = dict()
-        task_data = "[" + subprocess.Popen(['task', 'export', 'status:pending'], stdout=subprocess.PIPE).communicate()[0] + "]"
-        tasks = json.loads(task_data)
-        return tasks
-
     # Get list of projects with pending tasks.
     def get_projects(self):
         # Calling 'task' will get an updated project list.
         subprocess.call(['task'])
         twprojects = []
         twprojects.append('View all tasks')
-
-        tasks = self.load_tasks()
+        tw = TaskWarriorAPI()
+        tasks = tw.load_tasks()
         for task in tasks:
             if 'project' in task:
                 if task[u'project'] not in twprojects:
@@ -84,7 +86,8 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.ti.append([u'\u271A' + ' Add a Task', 'Add a new task'])
 
         # Build list of pending tasks for selected project.
-        tasks = self.load_tasks()
+        tw = TaskWarriorAPI()
+        tasks = tw.load_tasks()
         twtasks = []
         for task in tasks:
             if 'project' in task and twproject != "View all tasks":
@@ -250,7 +253,8 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
 class TaskwarriorAnnotateNewestTaskFromInputCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        tasks = self.load_tasks()
+        tw = TaskWarriorAPI()
+        tasks = tw.load_tasks()
         self.twtask = tasks[-1]
         self.window.show_input_panel('Annotate "' + self.twtask[u'description'] + '"', "", self.on_done, None, None)
         pass
@@ -283,7 +287,8 @@ class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
 class TaskwarriorAnnotateNewestTaskFromClipboardCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        tasks = self.load_tasks()
+        tw = TaskWarriorAPI()
+        tasks = tw.load_tasks()
         twtask = tasks[-1]
         clipboard = sublime.get_clipboard()
         if clipboard != '' and twtask[u'uuid'] != '':
