@@ -1,15 +1,13 @@
 import sublime
 import sublime_plugin
-from taskw import TaskWarrior
 import subprocess
 import datetime
+import json
 
 twprojects = None
 twproject = None
 twtasks = None
 twtask = None
-twconf = None
-w = TaskWarrior()
 
 settings = sublime.load_settings("sublime-taskwarrior.sublime-settings")
 
@@ -18,21 +16,10 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
     quick_panel_project_selected_index = None
 
-    def get_conf(self):
-
-        global twconf
-        global w
-        twconf = w.load_config()
-        return
-
     def run(self, resetProjects=False, resetTasks=False):
 
         global twprojects
         global twproject
-
-        # Get configuration if needed.
-        if twconf == None:
-            self.get_conf()
 
         if twprojects is None or resetProjects == True:
             twprojects = self.get_projects()
@@ -56,16 +43,21 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             return
         self.window.show_quick_panel(self.pri, self.get_tasks, sublime.MONOSPACE_FONT)
 
+    def load_tasks(self):
+        tasks = dict()
+        task_data = "[" + subprocess.Popen(['task', 'export', 'status:pending'], stdout=subprocess.PIPE).communicate()[0] + "]"
+        tasks = json.loads(task_data)
+        return tasks
+
     # Get list of projects with pending tasks.
     def get_projects(self):
         # Calling 'task' will get an updated project list.
         subprocess.call(['task'])
         twprojects = []
         twprojects.append('View all tasks')
-        global w
-        tasks = w.load_tasks()
-        twtasks = tasks['pending']
-        for task in twtasks:
+
+        tasks = self.load_tasks()
+        for task in tasks:
             if 'project' in task:
                 if task[u'project'] not in twprojects:
                     twprojects.append(task[u'project'])
@@ -73,8 +65,6 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
     # Get pending tasks.
     def get_tasks(self, idx):
-        # This will get an updated task list. Surely there is a better way.
-        subprocess.call(['task'])
         global twproject
         global twtasks
 
@@ -94,11 +84,9 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.ti.append([u'\u271A' + ' Add a Task', 'Add a new task'])
 
         # Build list of pending tasks for selected project.
-        global w
-        tasks = w.load_tasks()
-        pending_tasks = tasks['pending']
+        tasks = self.load_tasks()
         twtasks = []
-        for task in pending_tasks:
+        for task in tasks:
             if 'project' in task and twproject != "View all tasks":
                 if task[u'project'] == twproject:
                     twtasks.append(task)
@@ -267,10 +255,8 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
 class TaskwarriorAnnotateNewestTaskFromInputCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        global w
-        tasks = w.load_tasks()
-        pending_tasks = tasks[u'pending']
-        self.twtask = pending_tasks[-1]
+        tasks = self.load_tasks()
+        self.twtask = tasks[-1]
         self.window.show_input_panel('Annotate "' + self.twtask[u'description'] + '"', "", self.on_done, None, None)
         pass
 
@@ -302,10 +288,8 @@ class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
 class TaskwarriorAnnotateNewestTaskFromClipboardCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        global w
-        tasks = w.load_tasks()
-        pending_tasks = tasks[u'pending']
-        twtask = pending_tasks[-1]
+        tasks = self.load_tasks()
+        twtask = tasks[-1]
         clipboard = sublime.get_clipboard()
         if clipboard != '' and twtask[u'uuid'] != '':
             subprocess.call(['task', twtask[u'uuid'], 'annotate', clipboard])
