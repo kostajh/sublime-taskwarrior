@@ -100,9 +100,9 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
                 due = ''
                 tags = ''
                 priority = ''
-                created = "Created: " + datetime.datetime.fromtimestamp(int(task[u'entry'])).strftime('%m-%d-%y')
+                created = "Created: " + str(datetime.datetime.strptime(task[u'entry'], "%Y%m%dT%H%M%SZ"))
                 if 'due' in task:
-                    due = "Due: " + datetime.datetime.fromtimestamp(int(task[u'due'])).strftime('%m-%d-%y')
+                    due = "Due: " + str(datetime.datetime.strptime(task[u'due'], "%Y%m%dT%H%M%SZ"))
                 if 'tags' in task:
                     tags = "Tags: " + ', '.join(task[u'tags'])
                 if 'priority' in task:
