@@ -19,6 +19,31 @@ class TaskWarriorAPI:
         tasks = json.loads(task_data)
         return tasks
 
+    def task_add(self, input):
+        subprocess.call(['task', 'add', input])
+        tasks = self.load_tasks()
+        return tasks[-1]['id']
+
+    def task_annotate(self, uuid, input):
+        subprocess.call(['task', uuid, 'annotate', input])
+        return
+
+    def task_modify(self, uuid, input):
+        subprocess.call(['task', uuid, 'mod', input])
+        return
+
+    def task_done(self, uuid):
+        subprocess.call(['task', uuid, 'done'])
+        return
+
+    def task_status(self, uuid, status):
+        subprocess.call(['task', uuid, status])
+        return
+
+    def task_view(self, uuid):
+        task_info = subprocess.Popen(['task', uuid], stdout=subprocess.PIPE).communicate()[0]
+        return task_info
+
 
 class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
@@ -28,6 +53,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
 
         global twprojects
         global twproject
+        tw = TaskWarriorAPI()
 
         if twprojects is None or resetProjects == True:
             twprojects = self.get_projects()
@@ -35,7 +61,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         self.pri = []
         self.pri.append([u'\u271A' + ' Add a New Task', 'Create a task from the input panel'])
         try:
-            subprocess.call(['task'])
+            tw.load_tasks()
             for twproject in twprojects:
                 additional_data = 'See a list of all pending tasks'
                 if twproject != 'View all tasks':
@@ -54,11 +80,10 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
     # Get list of projects with pending tasks.
     def get_projects(self):
         # Calling 'task' will get an updated project list.
-        subprocess.call(['task'])
-        twprojects = []
-        twprojects.append('View all tasks')
         tw = TaskWarriorAPI()
         tasks = tw.load_tasks()
+        twprojects = []
+        twprojects.append('View all tasks')
         for task in tasks:
             if 'project' in task:
                 if task[u'project'] not in twprojects:
@@ -162,6 +187,8 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
         global twproject
         global twtask
 
+        tw = TaskWarriorAPI()
+
         if idx == -1:
             return
 
@@ -176,13 +203,13 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             if 'start' in twtask:
                 status_command = 'stop'
                 status_command_msg = 'Stopped task '
-            subprocess.call(['task', twtask[u'uuid'], status_command])
+            tw.task_status(twtask[u'uuid'], status_command)
             sublime.status_message(status_command_msg + '"' + twtask[u'description'] + '"')
             self.get_tasks(self.quick_panel_project_selected_index)
 
         # Mark Task as done
         if idx == 3:
-            subprocess.call(['task', twtask[u'uuid'], 'done'])
+            tw.task_done(twtask[u'uuid'])
             sublime.status_message('Completed task "' + twtask[u'description'] + '"')
             self.get_tasks(self.quick_panel_project_selected_index)
 
@@ -194,7 +221,7 @@ class TaskwarriorViewTasksCommand (sublime_plugin.WindowCommand):
             # Write task details to the output panel
             edit = v.begin_edit()
             v.insert(edit, v.size(), 'Details for task "' + twtask[u'description'] + '":' + '\n')
-            task_info = subprocess.Popen(['task', twtask[u'uuid']], stdout=subprocess.PIPE).communicate()[0]
+            task_info = tw.task_view(twtask[u'uuid'])
             v.insert(edit, v.size(), task_info)
             v.end_edit(edit)
             v.show(v.size())
@@ -228,8 +255,12 @@ class TaskwarriorAddTaskFromInputCommand(sublime_plugin.WindowCommand):
     def on_done(self, input):
         if input != '':
             self.task['title'] = input
-            subprocess.call(['task', 'add', input])
-            sublime.status_message('Added task "' + input + '"')
+            tw = TaskWarriorAPI()
+            task_id = tw.task_add(input)
+            if type(task_id) is int:
+                sublime.status_message("Added task %s: %s" % (str(task_id), input))
+            else:
+                sublime.status_message("Failed to add task: %s" % input)
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
 
@@ -244,7 +275,8 @@ class TaskwarriorAnnotateTaskFromInputCommand(sublime_plugin.WindowCommand):
 
     def on_done(self, input):
         if input != '':
-            subprocess.call(['task', twtask[u'uuid'], 'annotate', input])
+            tw = TaskWarriorAPI()
+            tw.task_annotate(twtask[u'uuid'], input)
             sublime.status_message('Annotated task "' + twtask[u'description'] + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
@@ -261,7 +293,8 @@ class TaskwarriorAnnotateNewestTaskFromInputCommand(sublime_plugin.WindowCommand
 
     def on_done(self, input):
         if input != '':
-            subprocess.call(['task', self.twtask[u'uuid'], 'annotate', input])
+            tw = TaskWarriorAPI()
+            tw.task_annotate(self.twtask[u'uuid'], input)
             sublime.status_message('Annotated task "' + self.twtask[u'description'] + '" with "' + input + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
@@ -278,7 +311,8 @@ class TaskwarriorModifyTaskFromInputCommand(sublime_plugin.WindowCommand):
     def on_done(self, input):
         if input != '':
             twtask[u'description'] = input
-            subprocess.call(['task', twtask[u'uuid'], 'mod', input])
+            tw = TaskWarriorAPI()
+            tw.task_modify(twtask[u'uuid'], input)
             sublime.status_message('Modified task "' + twtask[u'description'] + '"')
             self.window.run_command('taskwarrior_view_tasks', {'resetTasks': True})
         pass
@@ -292,6 +326,6 @@ class TaskwarriorAnnotateNewestTaskFromClipboardCommand(sublime_plugin.TextComma
         twtask = tasks[-1]
         clipboard = sublime.get_clipboard()
         if clipboard != '' and twtask[u'uuid'] != '':
-            subprocess.call(['task', twtask[u'uuid'], 'annotate', clipboard])
+            tw.annotate(twtask[u'uuid'], clipboard)
             sublime.status_message('Annotated task "' + twtask[u'description'] + '" with text "' + clipboard + '"')
         pass
