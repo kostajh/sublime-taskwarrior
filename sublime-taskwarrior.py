@@ -15,7 +15,7 @@ settings = sublime.load_settings("sublime-taskwarrior.sublime-settings")
 class TaskWarriorAPI:
     def load_tasks(self):
         tasks = dict()
-        task_data = "[" + subprocess.Popen(['task', 'export', 'status:pending'], stdout=subprocess.PIPE).communicate()[0] + "]"
+        task_data = subprocess.Popen(['task', 'rc.json.array=TRUE', 'export', 'status:pending'], stdout=subprocess.PIPE).communicate()[0]
         tasks = json.loads(task_data)
         return tasks
 
