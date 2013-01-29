@@ -1,6 +1,6 @@
 # Sublime Taskwarrior
 
-A plugin for ST2 to view, modify and add tasks with [Taskwarrior](http://www.taskwarrior.org).
+A plugin for Sublime Text 2 to view, modify and add tasks with [Taskwarrior](http://www.taskwarrior.org).
 
 When viewing tasks, tasks are organized by project as well as a "View all tasks" item. Select a task to complete, modify, or delete it.
 
@@ -25,6 +25,10 @@ When modifying or adding a task, use the same Taskwarrior syntax as you would on
 `ctrl+shift+a, ctrl+shift+t` – Annotate last task from clipboard.
 
 ## Requirements
+
+### Sublime Text 2
+
+This plugin is not yet compatible with Sublime Text 3.
 
 ### Taskwarrior 2
 
